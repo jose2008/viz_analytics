@@ -6,6 +6,8 @@ var numberOfPoints = 100;
 var pointRadius = 9;
 
 
+var confusionMatrix = gConfusionMatrix;
+
 function createConfusionMatrix2(options) {
         var width = 200;
         var height = 200;
@@ -17,6 +19,9 @@ d3.json('/static/js/data2.json', function(data) {
     var labels = d3.set(data.map(function(d) {
         return d.label;
     })).values();
+
+
+    document.write(confusionMatrix[0][0]);
 
     var xExtent = d3.extent(data, function(d) { return d.x });
     var yExtent = d3.extent(data, function(d) { return d.y });
