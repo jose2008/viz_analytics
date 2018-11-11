@@ -21,10 +21,11 @@ var matrixParams4 = { 	container : '#container4',
 
 
 var confusionMatrix = gConfusionMatrix;
+var confusionMatrix2 = gConfusionMatrix2;
 
 //print(confusionMatrix);
 
 createConfusionMatrix2( matrixParams1 );
 createConfusionMatrix2( matrixParams2 );
 createConfusionMatrix3( matrixParams3 );
-createConfusionMatrix2( matrixParams4 );
+createConfusionMatrix4( matrixParams4 );

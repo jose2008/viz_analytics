@@ -21,7 +21,7 @@ d3.json('/static/js/data2.json', function(data) {
     })).values();
 
 
-    document.write(confusionMatrix[0][0]);
+    //document.write(confusionMatrix[0][0]);
 
     var xExtent = d3.extent(data, function(d) { return d.x });
     var yExtent = d3.extent(data, function(d) { return d.y });
