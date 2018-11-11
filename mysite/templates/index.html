@@ -33,14 +33,13 @@
         </div>
 
         <div class="col-md-3 col-sm-6 mb-4">
-          asdasdas
+          KMeans
           <div id="dataView3" class="matrixContainer"></div>
           <div style="display:inline-block; float:left" id="container3"></div>
           <div style="display:inline-block; float:left" id="legend3"></div>
         </div>
-
         <div class="col-md-3 col-sm-6 mb-4">
-          adasdas  {{m2}}
+          Birch
           <div id="dataView4" class="matrixContainer"></div>
           <div style="display:inline-block; float:left" id="container4"></div>
           <div style="display:inline-block; float:left" id="legend4"></div>
@@ -58,7 +57,12 @@
 
 
   <script type="text/javascript">
-      var gConfusionMatrix = {{m2}};
+      var gConfusionMatrix = {{m2}}[0];
+  </script>
+
+
+  <script type="text/javascript">
+      var gConfusionMatrix2 = {{m2}}[1];
   </script>
 
   
@@ -67,7 +71,10 @@
   <script src="{% static 'js/script.js' %}"></script>
 
   {% load static %}
-  <script src="{% static 'js/script2.js' %}"></script>  
+  <script src="{% static 'js/script2.js' %}"></script>
+
+  {% load static %}
+  <script src="{% static 'js/script3.js' %}"></script>  
 
 
   {% load static %}
