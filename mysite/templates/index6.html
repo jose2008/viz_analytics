@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include "includes/head.html" %}
+
+  <body>
+
+    {% include "includes/navbar.html" %}
+
+    <!-- Page Content -->
+    <div class="container2">
+
+      <div class="row2">
+
+        <div class="col-md-3 col-sm-6 mb-4">
+          <div id="dataView11" class="matrixContainer2"></div>
+          <div style="display:inline-block; float:left" id="container11"></div>
+          <div style="display:inline-block; float:left" id="legend11"></div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+          <div id="dataView22" class="matrixContainer2"></div>
+          <div style="display:inline-block; float:left" id="container22"></div>
+          <div style="display:inline-block; float:left" id="legend22"></div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+          <div id="dataView33" class="matrixContainer2"></div>
+          <div style="display:inline-block; float:left" id="container33"></div>
+          <div style="display:inline-block; float:left" id="legend33"></div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+          <div id="dataView44" class="matrixContainer2"></div>
+          <div style="display:inline-block; float:left" id="container44"></div>
+          <div style="display:inline-block; float:left" id="legend44"></div>
+        </div>
+
+      </div>
+      <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+    <script type="text/javascript">
+      var gConfusionMatrix = {{m2}};
+    </script>
+
+    {% load static %}
+    <script src="{% static 'js/main.js' %}"></script>
+    {% load static %}
+    <script src="{% static 'js/test.js' %}"></script>
+
+
+  </body>
+
+</html>
