@@ -10,8 +10,6 @@ var pointRadius = 9;
 
 var confusionMatrix2 = gConfusionMatrix2;
 
-var l = [1,2,3,4];
-document.write(l[0]);
 
 function createConfusionMatrix4(options) {
         var width = 200;
@@ -84,9 +82,9 @@ function createConfusionMatrix4(options) {
       .attr("id",function(d,i) {return "dot_" + i;}) // added
       .attr("class", "dot")
       .attr("r", 3.5)
-      .attr("cx", function(d) { document.write(d[0]);return x(d[0]); })
+      .attr("cx", function(d) { return x(d[0]); })
       .attr("cy", function(d) { return y(d[1]); })
-      .style("fill", function(d) { return color(d[2]); });
+      .style("fill", function(d) { return color(d[2]);  });
 
 
 

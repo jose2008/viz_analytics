@@ -92,13 +92,16 @@ def index(request):
 
     matrix_x = np.matrix(feature)
     matrix_y = np.matrix(kmean.labels_).transpose()
-
-
+    index = np.matrix(np.arange(569)).transpose()
+    print(index)
     #print(matrix_x)
     #print(matrix_y)
 
     matrix_general = np.concatenate((matrix_x, matrix_y), axis=1)
+    print(matrix_general.shape)
     #print(matrix_general)
+    matrix_test = np.concatenate((index, matrix_general),axis=1)
+    y_test = matrix_test.tolist()
 
 
     y3 = matrix_general.tolist()
@@ -139,7 +142,8 @@ def index(request):
 
 
     list_model = []
-    list_model.append(y3)
+    #list_model.append(y3)
+    list_model.append(y_test)
     list_model.append(y4)
 
 
