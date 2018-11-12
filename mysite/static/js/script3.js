@@ -84,7 +84,7 @@ function createConfusionMatrix4(options) {
       .attr("r", 3.5)
       .attr("cx", function(d) { return x(d[0]); })
       .attr("cy", function(d) { return y(d[1]); })
-      .style("fill", function(d) { return color(d[2]); });
+      .style("fill", function(d) { return color(d[2]);  });
 
 
 

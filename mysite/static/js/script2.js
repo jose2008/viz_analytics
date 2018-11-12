@@ -94,7 +94,7 @@ function createConfusionMatrix3(options) {
         lasso.items().filter(function(d) {return d.selected===false})
         .classed({"not_possible":false,"possible":false})
         .attr("r",3.5);
-        document.write(" ---- "+l);
+        //document.write(" ---- "+l);
     };
 
     // Create the area where the lasso event can be triggered
