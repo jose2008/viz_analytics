@@ -8,6 +8,8 @@ var pointRadius = 9;
 
 var confusionMatrix = gConfusionMatrix;
 
+var l = []
+
 function createConfusionMatrix3(options) {
     var width = 200;
     var height = 200;
@@ -15,8 +17,8 @@ function createConfusionMatrix3(options) {
     var legend = options.legend;
 
 
-    var xExtent = d3.extent(confusionMatrix, function(d) { return d[0] });
-    var yExtent = d3.extent(confusionMatrix, function(d) { return d[1] });
+    var xExtent = d3.extent(confusionMatrix, function(d) { return d[1] });
+    var yExtent = d3.extent(confusionMatrix, function(d) { return d[2] });
     var xRange = xExtent[1] - xExtent[0];
     var yRange = yExtent[1] - yExtent[0];
 
@@ -76,16 +78,13 @@ function createConfusionMatrix3(options) {
     var lasso_end = function() {
         // Reset the color of all dots
         lasso.items()
-        .style("fill", function(d) { return color(d[2]); });
+        .style("fill", function(d) { return color(d[3]); });
 
         // Style the selected dots
         lasso.items().filter(function(d,j) {
-        //document.write(i);
-        if(d.selected===true) document.write(j);
-         for (var i = d.length - 1; i >= 0; i--) {
-             d[0];
-             if(d.selected===true) document.write(j+" - ");
-         }
+        //document.write(d[j]);
+        if(d.selected===true) l.push(j);//document.write(j);
+        
          return d.selected===true;
         })
         .classed({"not_possible":false,"possible":false})
@@ -95,6 +94,7 @@ function createConfusionMatrix3(options) {
         lasso.items().filter(function(d) {return d.selected===false})
         .classed({"not_possible":false,"possible":false})
         .attr("r",3.5);
+        document.write(" ---- "+l);
     };
 
     // Create the area where the lasso event can be triggered
@@ -147,9 +147,9 @@ function createConfusionMatrix3(options) {
         .attr("id",function(d,i) {return "dot_" + i;}) // added
         .attr("class", "dot")
         .attr("r", 3.5)
-        .attr("cx", function(d) { return x(d[0]); })
-        .attr("cy", function(d) { return y(d[1]); })
-        .style("fill", function(d) { return color(d[2]); });
+        .attr("cx", function(d) { return x(d[1]); })
+        .attr("cy", function(d) { return y(d[2]); })
+        .style("fill", function(d) { return color(d[3]); });
 
     lasso.items(d3.selectAll(".dot"));
 
