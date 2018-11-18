@@ -14,8 +14,40 @@
   {% include "includes/navbar.html" %}
 
 
+
+
+
+
+
+
     <!-- Page Content -->
     <div class="container">
+
+
+
+      <h1 class="my-4">Page Heading
+        <small>Secondary Text</small>
+      </h1>
+
+      <!-- Portfolio Item Row -->
+      <div class="row">
+
+        Voting Ensamble
+          <div id="dataView1" class="matrixContainer"></div>
+          <div style="display:inline-block; float:left" id="container1"></div>
+          <div style="display:inline-block; float:left" id="legend1"></div>
+
+        
+
+</div>
+
+
+
+
+
+
+
+
 
       <div class="row">
 
@@ -52,6 +84,8 @@
   </div>
 
 
+
+
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="https://d3js.org/d3-path.v0.1.min.js"></script>
 <script src="https://d3js.org/d3-shape.v0.6.min.js"></script>
@@ -67,6 +101,13 @@
       var gConfusionMatrix2 = {{m2}}[1];
   </script>
 
+  <script type="text/javascript">
+      var gConfusionMatrix3 = {{m2}}[2];
+  </script>
+
+  <script type="text/javascript">
+      var gConfusionMatrix4 = {{m2}}[3];
+  </script>
   
 
   {% load static %}
@@ -78,6 +119,11 @@
   {% load static %}
   <script src="{% static 'js/script3.js' %}"></script>  
 
+  {% load static %}
+  <script src="{% static 'js/script4.js' %}"></script>  
+
+  {% load static %}
+  <script src="{% static 'js/script5.js' %}"></script>  
 
   {% load static %}
   <script src="{% static 'js/test2.js' %}"></script>

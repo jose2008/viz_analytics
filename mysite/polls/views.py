@@ -1,11 +1,9 @@
 from django.shortcuts import render
 from django.utils import timezone
-import json
 import numpy as np
-# Create your views here.
 #from .models import Post
 from polls.pca import create_file_json
-#make algorithm of classification
+import polls.somLib as somLib
 from sklearn.datasets import load_iris
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection  import cross_val_score
@@ -14,15 +12,16 @@ from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 from sklearn.datasets import load_breast_cancer
+import pandas as pd 
+#import numpy as np
+from sklearn.cluster import KMeans
+from sklearn import datasets
+from sklearn.decomposition import PCA as sklearnPCA
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import Birch
 
-
-#import sys
-#sys.path.append('../../')
-
-
-create_file_json()
-
-iris = load_breast_cancer()
+#iris = load_breast_cancer()
+iris = datasets.load_iris()
 X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.3) # 70% training and 30% test
 knn = KNeighborsClassifier()
 knn.fit(X_train, y_train)
@@ -31,147 +30,112 @@ cm = confusion_matrix(y_test, y_pred)
 
 
 
+def most_common(lst, acurracy):
+    if (lst[0]!=lst[1]) and (lst[0]!=lst[2]) and (lst[1]!=lst[2]):
+        return lst[acurracy.index(max(acurracy))]
+    else:
+        return max(set(lst), key=lst.count)
+
+
 
 def index(request):
     X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.3) # 70% tra$
-    knn = KNeighborsClassifier()
-    knn.fit(X_train, y_train)
-    y_pred = knn.predict(X_test)
-
-    cm = confusion_matrix(y_test, y_pred)
-    mydict = dict(np.ndenumerate(cm))
-
-    for key in mydict.keys():
-        if type(key) is not str:
-            try:
-                mydict[str(key)] = mydict[key]
-            except:
-                try:
-                    mydict[repr(key)] = mydict[key]
-                except:
-                    pass
-            del mydict[key]
+    acurracy_list = []
 
 
 
-    list = [1,2,3,4]
-    x = np.matrix(cm)
-    y2 = x.tolist()
-
-
-
-
-
-    #generation of matrix of kmeans
-    import pandas as pd 
-    #import numpy as np
-    from sklearn.cluster import KMeans
-    from sklearn import datasets
-    from sklearn.decomposition import PCA as sklearnPCA
-    from sklearn.preprocessing import StandardScaler
-    import json
-    from sklearn.cluster import Birch
-
-
-    #iris = datasets.load_iris()
-    x = iris.data
+    ############################################### k-Means clustering ##################################################
     kmean = KMeans(n_clusters=3)
-    y = kmean.fit(x)
+    kmean.fit(iris.data)
 
-
-    #print(x)
-    #print(kmean.labels_)
-    #print("exit....")
-
-
-
-    x_std = StandardScaler().fit_transform(x)
+    kmean_std = StandardScaler().fit_transform(iris.data)
     sklearn_pca = sklearnPCA(n_components=2)
-    feature = sklearn_pca.fit_transform(x_std)
+    kmean_feature = sklearn_pca.fit_transform(kmean_std)
 
+    matrix_feature_kmean = np.matrix(kmean_feature)
+    matrix_label_knn = np.matrix(kmean.labels_).transpose()
+    index = np.matrix(np.arange(150)).transpose()
 
-    matrix_x = np.matrix(feature)
-    matrix_y = np.matrix(kmean.labels_).transpose()
-    index = np.matrix(np.arange(569)).transpose()
-    print(index)
-    #print(matrix_x)
-    #print(matrix_y)
-
-    matrix_general = np.concatenate((matrix_x, matrix_y), axis=1)
-    print(matrix_general.shape)
-    #print(matrix_general)
+    matrix_general = np.concatenate((matrix_feature_kmean, matrix_label_knn), axis=1)
     matrix_test = np.concatenate((index, matrix_general),axis=1)
-    y_test = matrix_test.tolist()
+    tolist_knn = matrix_test.tolist()
+    v1 = kmean.predict(iris.data)
+    acurracy_list.append(metrics.adjusted_rand_score(iris.target, kmean.predict(iris.data)) )
+    print(kmean.predict(iris.data))
+
+    ################################################# birch clustering #####################################################
+    birch = Birch(branching_factor=50, n_clusters=3, threshold=0.5)
+    birch.fit(iris.data)
+
+    birch_std = StandardScaler().fit_transform(iris.data)
+    birch_feature = sklearn_pca.fit_transform(birch_std)
+
+    matrix__feature_birch = np.matrix(birch_feature)
+    matrix_label_birch = np.matrix(birch.labels_).transpose()
+
+    matrix_general_birch = np.concatenate((matrix__feature_birch, matrix_label_birch), axis=1)
+    tolist_birch = matrix_general_birch.tolist()
+    v2 = birch.predict(iris.data)
+    acurracy_list.append(metrics.adjusted_rand_score(iris.target, birch.predict(iris.data)) )
+    print(birch.predict(iris.data))
+
+    ################################################## SOM clustering ######################################################
+    df_train = pd.DataFrame(iris.data, columns=iris.feature_names)
+    print(df_train.shape)
+    df_test  = pd.DataFrame(X_test , columns=iris.feature_names)
+    df_original = df_train
+    agri_som = somLib.SOM(1,3,4)
+    df_train = df_train / df_train.max()
+    df_test = df_test / df_test.max()
+    agri_som.train(df_train.values,
+              num_epochs=200,
+              init_learning_rate=0.01
+              )
+
+    def predict(df):
+        bmu, bmu_idx = agri_som.find_bmu(df.values)
+        df['bmu'] = bmu
+        df['bmu_idx'] =  bmu_idx[1]#bmu_idx
+        return df
+    clustered_df = df_train.apply(predict, axis=1)
+
+    som_std = StandardScaler().fit_transform(iris.data)
+    som_feature = sklearn_pca.fit_transform(som_std)
+
+    matrix__feature_som = np.matrix(som_feature)
+    matrix_label_som = np.matrix(clustered_df['bmu_idx'] ).transpose()
+    print(matrix_label_som.shape)
+    print(matrix__feature_som.shape)
+    matrix_general_som = np.concatenate((matrix__feature_som, matrix_label_som), axis=1)
+    tolist_som = matrix_general_som.tolist()
+    acurracy_list.append(metrics.adjusted_rand_score(iris.target, clustered_df['bmu_idx']) )
+    v3 = clustered_df['bmu_idx']
 
 
-    y3 = matrix_general.tolist()
+    ############################################## ensamble voting #############################################################
+    voting = list()
+    v = []
+    for i in range(len(X_test)):
+        voting.append( most_common( list([v1[i], v2[i], v3[i]]), acurracy_list) )
+
+    l = np.array(voting)
 
 
 
+    voting_std = StandardScaler().fit_transform(iris.data)
+    voting_feature = sklearn_pca.fit_transform(voting_std)    
+
+    matrix__feature_voting = np.matrix(voting_feature)
+    matrix_label_voting = np.matrix(clustered_df['bmu_idx'] ).transpose()
+
+    matrix_general_voting = np.concatenate((matrix__feature_voting, matrix_label_voting), axis=1)
+    tolist_voting = matrix_general_voting.tolist()
 
 
-    x2 = iris.data
-    kmean2 = Birch(branching_factor=50, n_clusters=3, threshold=0.5)
-    y4 = kmean2.fit(x2)
-
-
-    #print(x)
-    #print(kmean.labels_)
-    #print("exit....")
-
-
-
-    x_std2 = StandardScaler().fit_transform(x2)
-    sklearn_pca2 = sklearnPCA(n_components=2)
-    feature3 = sklearn_pca2.fit_transform(x_std2)
-
-
-    matrix_x2 = np.matrix(feature3)
-    matrix_y2 = np.matrix(kmean2.labels_).transpose()
-
-
-    #print(matrix_x)
-    #print(matrix_y)
-
-    matrix_general2 = np.concatenate((matrix_x2, matrix_y2), axis=1)
-    y4 = matrix_general2.tolist()
-
-
-
-
-
-
+    ############################################### seding model to view ###################################################
     list_model = []
-    #list_model.append(y3)
-    list_model.append(y_test)
-    list_model.append(y4)
-
-
-
-
-
-
-
-    l = []
-    for i in range(matrix_general.shape[0]-1):
-        k = i*3
-        d = {}
-        d["x"] = matrix_general.item(k)
-        d["y"] = matrix_general.item(k+1)
-        d["label"] = matrix_general.item(k+2)
-        l.append(d)
-
-    with open('data3.json','w') as outfile:
-        json.dump(l, outfile)
-
-
-
-
-    #print("---------------------->"+y)
-
-    days = 2
-    count_data = 5
-    data = {"label":days, "days_of_data":count_data}
-    my_data = {'my_data':json.dumps(data)}
-    #posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    list_model.append(tolist_knn)
+    list_model.append(tolist_birch)
+    list_model.append(tolist_som)
+    list_model.append(tolist_voting)
     return render(request,'index.html', {"m2":list_model})
