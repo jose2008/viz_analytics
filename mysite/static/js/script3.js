@@ -8,7 +8,7 @@ var pointRadius = 9;
 
 
 
-var confusionMatrix2 = gConfusionMatrix2;
+//var confusionMatrix2 = gConfusionMatrix2;
 
 
 function createConfusionMatrix4(options) {
@@ -18,8 +18,8 @@ function createConfusionMatrix4(options) {
         var legend = options.legend;
 
 
-        var xExtent = d3.extent(confusionMatrix2, function(d) { return d[0] });
-    var yExtent = d3.extent(confusionMatrix2, function(d) { return d[1] });
+        var xExtent = d3.extent(model_birch, function(d) { return d[0] });
+    var yExtent = d3.extent(model_birch, function(d) { return d[1] });
     var xRange = xExtent[1] - xExtent[0];
     var yRange = yExtent[1] - yExtent[0];
 
@@ -42,6 +42,11 @@ function createConfusionMatrix4(options) {
     .range([height, 0]);
 
    var color = d3.scale.category10();
+   //var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+   //console.info( color(1) );
+   //console.info( color(2) );
+   //console.info( color(3) );
 
    var xAxis = d3.svg.axis()
     .scale(x)
@@ -77,14 +82,14 @@ function createConfusionMatrix4(options) {
 
 
       svg.selectAll(".dot")
-      .data(confusionMatrix2)
+      .data(model_birch)
       .enter().append("circle")
       .attr("id",function(d,i) {return "dot_" + i;}) // added
       .attr("class", "dot")
       .attr("r", 3.5)
       .attr("cx", function(d) { return x(d[0]); })
       .attr("cy", function(d) { return y(d[1]); })
-      .style("fill", function(d) { return color(d[2]);  });
+      .style("fill", function(d) { document.write(d[2]); return color(d[2]);  });
 
 
 

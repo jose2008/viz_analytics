@@ -8,7 +8,7 @@ var pointRadius = 9;
 
 
 
-var confusionMatrix4 = gConfusionMatrix4;
+//var confusionMatrix4 = gConfusionMatrix4;
 
 
 function createConfusionMatrix5(options) {
@@ -18,8 +18,8 @@ function createConfusionMatrix5(options) {
         var legend = options.legend;
 
 
-        var xExtent = d3.extent(confusionMatrix4, function(d) { return d[0] });
-    var yExtent = d3.extent(confusionMatrix4, function(d) { return d[1] });
+        var xExtent = d3.extent(model_voting, function(d) { return d[0] });
+    var yExtent = d3.extent(model_voting, function(d) { return d[1] });
     var xRange = xExtent[1] - xExtent[0];
     var yRange = yExtent[1] - yExtent[0];
 
@@ -77,7 +77,7 @@ function createConfusionMatrix5(options) {
 
 
       svg.selectAll(".dot")
-      .data(confusionMatrix4)
+      .data(model_voting)
       .enter().append("circle")
       .attr("id",function(d,i) {return "dot_" + i;}) // added
       .attr("class", "dot")

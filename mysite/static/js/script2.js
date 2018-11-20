@@ -6,7 +6,7 @@ var numberOfPoints = 100;
 var pointRadius = 9;
 
 
-var confusionMatrix = gConfusionMatrix;
+//var confusionMatrix = gConfusionMatrix;
 
 var l = []
 
@@ -17,8 +17,8 @@ function createConfusionMatrix3(options) {
     var legend = options.legend;
 
 
-    var xExtent = d3.extent(confusionMatrix, function(d) { return d[1] });
-    var yExtent = d3.extent(confusionMatrix, function(d) { return d[2] });
+    var xExtent = d3.extent(model_kmean, function(d) { return d[0] });
+    var yExtent = d3.extent(model_kmean, function(d) { return d[1] });
     var xRange = xExtent[1] - xExtent[0];
     var yRange = yExtent[1] - yExtent[0];
 
@@ -78,7 +78,7 @@ function createConfusionMatrix3(options) {
     var lasso_end = function() {
         // Reset the color of all dots
         lasso.items()
-        .style("fill", function(d) { return color(d[3]); });
+        .style("fill", function(d) { return color(d[2]); });
 
         // Style the selected dots
         lasso.items().filter(function(d,j) {
@@ -142,14 +142,14 @@ function createConfusionMatrix3(options) {
 
 
     svg.selectAll(".dot")
-        .data(confusionMatrix)
+        .data(model_kmean)
         .enter().append("circle")
         .attr("id",function(d,i) {return "dot_" + i;}) // added
         .attr("class", "dot")
         .attr("r", 3.5)
-        .attr("cx", function(d) { return x(d[1]); })
-        .attr("cy", function(d) { return y(d[2]); })
-        .style("fill", function(d) { return color(d[3]); });
+        .attr("cx", function(d) { return x(d[0]); })
+        .attr("cy", function(d) { return y(d[1]); })
+        .style("fill", function(d) {  return color(d[2] ); });
 
     lasso.items(d3.selectAll(".dot"));
 

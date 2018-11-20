@@ -8,7 +8,7 @@ var pointRadius = 9;
 
 
 
-var confusionMatrix3 = gConfusionMatrix3;
+//var confusionMatrix3 = gConfusionMatrix3;
 
 
 function createConfusionMatrix5(options) {
@@ -18,8 +18,8 @@ function createConfusionMatrix5(options) {
         var legend = options.legend;
 
 
-        var xExtent = d3.extent(confusionMatrix3, function(d) { return d[0] });
-    var yExtent = d3.extent(confusionMatrix3, function(d) { return d[1] });
+        var xExtent = d3.extent(model_som, function(d) { return d[0] });
+    var yExtent = d3.extent(model_som, function(d) { return d[1] });
     var xRange = xExtent[1] - xExtent[0];
     var yRange = yExtent[1] - yExtent[0];
 
@@ -77,14 +77,14 @@ function createConfusionMatrix5(options) {
 
 
       svg.selectAll(".dot")
-      .data(confusionMatrix3)
+      .data(model_som)
       .enter().append("circle")
       .attr("id",function(d,i) {return "dot_" + i;}) // added
       .attr("class", "dot")
       .attr("r", 3.5)
       .attr("cx", function(d) { return x(d[0]); })
       .attr("cy", function(d) { return y(d[1]); })
-      .style("fill", function(d) { return color(d[2]);  });
+      .style("fill", function(d) { document.write(d[2]); return color(d[2]);  });
 
 
 

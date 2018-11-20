@@ -39,24 +39,13 @@
 
         
 
-</div>
-
-
-
-
-
-
+      </div>
 
 
 
       <div class="row">
 
-        <div class="col-md-3 col-sm-6 mb-4">
-          DBScan
-          <div id="dataView1" class="matrixContainer"></div>
-          <div style="display:inline-block; float:left" id="container1"></div>
-          <div style="display:inline-block; float:left" id="legend1"></div>
-        </div>
+  
 
         <div class="col-md-3 col-sm-6 mb-4">
           SOM
@@ -86,44 +75,29 @@
 
 
 
-<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<script src="https://d3js.org/d3-path.v0.1.min.js"></script>
-<script src="https://d3js.org/d3-shape.v0.6.min.js"></script>
-<script src = "http://axc.net/code_libraries/lasso/lasso.min.js"></script>
-
 
   <script type="text/javascript">
-      var gConfusionMatrix = {{m2}}[0];
+      var model_kmean = {{model_list}}[0];
   </script>
 
 
   <script type="text/javascript">
-      var gConfusionMatrix2 = {{m2}}[1];
+      var model_birch = {{model_list}}[1];
   </script>
 
   <script type="text/javascript">
-      var gConfusionMatrix3 = {{m2}}[2];
+      var model_som = {{model_list}}[2];
   </script>
 
   <script type="text/javascript">
-      var gConfusionMatrix4 = {{m2}}[3];
+      var model_voting = {{model_list}}[3];
   </script>
   
 
   {% load static %}
   <script src="{% static 'js/script.js' %}"></script>
 
-  {% load static %}
-  <script src="{% static 'js/script2.js' %}"></script>
-
-  {% load static %}
-  <script src="{% static 'js/script3.js' %}"></script>  
-
-  {% load static %}
-  <script src="{% static 'js/script4.js' %}"></script>  
-
-  {% load static %}
-  <script src="{% static 'js/script5.js' %}"></script>  
+  
 
   {% load static %}
   <script src="{% static 'js/test2.js' %}"></script>

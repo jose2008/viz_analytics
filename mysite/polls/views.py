@@ -41,27 +41,10 @@ def most_common(lst, acurracy):
 def index(request):
     X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.3) # 70% tra$
     acurracy_list = []
-
-
-
-    ############################################### k-Means clustering ##################################################
-    kmean = KMeans(n_clusters=3)
-    kmean.fit(iris.data)
-
-    kmean_std = StandardScaler().fit_transform(iris.data)
     sklearn_pca = sklearnPCA(n_components=2)
-    kmean_feature = sklearn_pca.fit_transform(kmean_std)
 
-    matrix_feature_kmean = np.matrix(kmean_feature)
-    matrix_label_knn = np.matrix(kmean.labels_).transpose()
-    index = np.matrix(np.arange(150)).transpose()
 
-    matrix_general = np.concatenate((matrix_feature_kmean, matrix_label_knn), axis=1)
-    matrix_test = np.concatenate((index, matrix_general),axis=1)
-    tolist_knn = matrix_test.tolist()
-    v1 = kmean.predict(iris.data)
-    acurracy_list.append(metrics.adjusted_rand_score(iris.target, kmean.predict(iris.data)) )
-    print(kmean.predict(iris.data))
+    
 
     ################################################# birch clustering #####################################################
     birch = Birch(branching_factor=50, n_clusters=3, threshold=0.5)
@@ -75,14 +58,73 @@ def index(request):
 
     matrix_general_birch = np.concatenate((matrix__feature_birch, matrix_label_birch), axis=1)
     tolist_birch = matrix_general_birch.tolist()
+    print(tolist_birch)
     v2 = birch.predict(iris.data)
     acurracy_list.append(metrics.adjusted_rand_score(iris.target, birch.predict(iris.data)) )
-    print(birch.predict(iris.data))
+    #print(birch.predict(iris.data))
+    print(tolist_birch)    
+
+    #for i in range(len(iris.target)-1):
+    #    #if tolist_knn[i][3] == 1:
+    #    tolist_birch[i][2] = 1.0
+    #    print("changeeeeee")
+
+    #print(tolist_birch)
+
+
+############################################### k-Means clustering ##################################################
+    kmean = KMeans(n_clusters=3)
+    kmean.fit(iris.data)
+
+    kmean_std = StandardScaler().fit_transform(iris.data)
+    kmean_feature = sklearn_pca.fit_transform(kmean_std)
+
+    matrix_feature_kmean = np.matrix(kmean_feature)
+    matrix_label_knn = np.matrix(kmean.labels_).transpose()
+    index = np.matrix(np.arange(150)).transpose()
+
+    matrix_general = np.concatenate((matrix_feature_kmean, matrix_label_knn), axis=1)
+    matrix_test = np.concatenate((index, matrix_general),axis=1)
+    tolist_knn = matrix_general.tolist()
+    v1 = kmean.predict(iris.data)
+    acurracy_list.append(metrics.adjusted_rand_score(iris.target, kmean.predict(iris.data)) )
+    #print(kmean.predict(iris.data))
+
+
+    from collections import Counter
+    s = 0
+    frequency = {}
+    for i in range(len(iris.target)-1):
+        if v1[i] == 0:
+            count = frequency.get(v1[i],0)
+            frequency[v2[i]] =count +1
+    new_label =  max(frequency, key=frequency.get)
+
+
+    #for i in range(len(iris.target)-1):
+    #    if tolist_knn[i][3] == 2:
+    #        aux =  tolist_knn[i][3]
+    #        tolist_knn[i][3] = 1
+
+    tolist_knn_final = tolist_knn
+
+
+    #print(tolist_knn[1])
+    #for i in range(len(iris.target)-1):
+    #    #if tolist_knn[i][3] == 1:
+    #    tolist_knn[i][3] = 1.0
+    #    print("changeeeeee")
+
+
+
+        
+
+
 
     ################################################## SOM clustering ######################################################
-    df_train = pd.DataFrame(iris.data, columns=iris.feature_names)
+    df_train = pd.DataFrame( iris.data, columns=iris.feature_names)
     print(df_train.shape)
-    df_test  = pd.DataFrame(X_test , columns=iris.feature_names)
+    df_test  = pd.DataFrame( X_test   , columns=iris.feature_names)
     df_original = df_train
     agri_som = somLib.SOM(1,3,4)
     df_train = df_train / df_train.max()
@@ -138,4 +180,5 @@ def index(request):
     list_model.append(tolist_birch)
     list_model.append(tolist_som)
     list_model.append(tolist_voting)
-    return render(request,'index.html', {"m2":list_model})
+    print(tolist_som)
+    return render(request,'index.html', {"model_list":list_model})
