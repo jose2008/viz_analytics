@@ -1,26 +1,26 @@
 
 var matrixParams1 = { container : '#container1',
                       legend    : '#legend1',
-                      model     :  model_kmean,
+                      model     :  model_voting,
                       count     : 0
 
                     };
 
 var matrixParams2 = { 	container : '#container2',
                     	legend    : '#legend2',
-                    	model     : model_birch,
+                    	model     : model_som,
                     	count     : 1000
                     };
 
 var matrixParams3 = { 	container : '#container3',
                         legend    : '#legend3',
-                        model 	  : model_som,
+                        model 	  : model_kmean,
                         count     : 2000
                     };
 
 var matrixParams4 = { 	container : '#container4',
                        	legend    : '#legend4',
-                       	model     : model_voting,
+                       	model     : model_birch,
                        	count     : 3000
                     };
 

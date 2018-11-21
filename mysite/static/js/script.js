@@ -48,7 +48,7 @@ function createGraficaModel(options) {
         .range([height, 0]);
 
     var color = d3.scale.category10();
-
+    var colores_g = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom");
@@ -81,7 +81,7 @@ function createGraficaModel(options) {
     var lasso_end = function() {
         // Reset the color of all dots
         lasso.items()
-        .style("fill", function(d) { return color(d[2]); });
+        .style("fill", function(d) { return colores_g[d[2]]; });
 
         // Style the selected dots
         lasso.items().filter(function(d,j) {
@@ -153,7 +153,7 @@ function createGraficaModel(options) {
         .attr("r", 3.5)
         .attr("cx", function(d) { return x(d[0]); })
         .attr("cy", function(d) { return y(d[1]); })
-        .style("fill", function(d) {  return color(d[2] ); });
+        .style("fill", function(d) {  return colores_g[d[2] ]; });
 
     svg.call(lasso);
     lasso.items(d3.selectAll(".dot"));

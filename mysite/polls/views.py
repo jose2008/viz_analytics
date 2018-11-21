@@ -58,12 +58,8 @@ def index(request):
 
     matrix_general_birch = np.concatenate((matrix__feature_birch, matrix_label_birch), axis=1)
     tolist_birch = matrix_general_birch.tolist()
-    print(tolist_birch)
     v2 = birch.predict(iris.data)
     acurracy_list.append(metrics.adjusted_rand_score(iris.target, birch.predict(iris.data)) )
-    #print(birch.predict(iris.data))
-    print(tolist_birch)    
-
     #for i in range(len(iris.target)-1):
     #    #if tolist_knn[i][3] == 1:
     #    tolist_birch[i][2] = 1.0
@@ -146,8 +142,6 @@ def index(request):
 
     matrix__feature_som = np.matrix(som_feature)
     matrix_label_som = np.matrix(clustered_df['bmu_idx'] ).transpose()
-    print(matrix_label_som.shape)
-    print(matrix__feature_som.shape)
     matrix_general_som = np.concatenate((matrix__feature_som, matrix_label_som), axis=1)
     tolist_som = matrix_general_som.tolist()
     acurracy_list.append(metrics.adjusted_rand_score(iris.target, clustered_df['bmu_idx']) )
@@ -157,7 +151,7 @@ def index(request):
     ############################################## ensamble voting #############################################################
     voting = list()
     v = []
-    for i in range(len(X_test)):
+    for i in range(len(iris.data)):
         voting.append( most_common( list([v1[i], v2[i], v3[i]]), acurracy_list) )
 
     l = np.array(voting)
@@ -168,7 +162,9 @@ def index(request):
     voting_feature = sklearn_pca.fit_transform(voting_std)    
 
     matrix__feature_voting = np.matrix(voting_feature)
-    matrix_label_voting = np.matrix(clustered_df['bmu_idx'] ).transpose()
+    matrix_label_voting = np.matrix(l ).transpose()
+    print(l.shape)
+    print(voting_feature.shape)
 
     matrix_general_voting = np.concatenate((matrix__feature_voting, matrix_label_voting), axis=1)
     tolist_voting = matrix_general_voting.tolist()
@@ -180,5 +176,9 @@ def index(request):
     list_model.append(tolist_birch)
     list_model.append(tolist_som)
     list_model.append(tolist_voting)
-    print(tolist_som)
+    print(tolist_knn)
+    print("**************")
+    print(tolist_birch)
+    print("***************")
+    print(tolist_voting)
     return render(request,'index.html', {"model_list":list_model})
