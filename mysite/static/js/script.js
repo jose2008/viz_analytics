@@ -148,7 +148,7 @@ function createGraficaModel(options) {
     svg.selectAll(".dot")
         .data(model)
         .enter().append("circle")
-        .attr("id",function(d,i) {document.write(i); return "dot_" + i+count;}) // added
+        .attr("id",function(d,i) { return "dot_" + i+count;}) // added
         .attr("class", "dot")
         .attr("r", 3.5)
         .attr("cx", function(d) { return x(d[0]); })

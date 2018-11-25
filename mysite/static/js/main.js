@@ -1,12 +1,15 @@
-var margin = {top: 50, right: 50, bottom: 100, left: 100};
 
-function createConfusionMatrix(options) {
-	    var width = 200,
-	    height = 200,
+
+
+
+
+function Matrix(options) {
+	var margin = {top: 50, right: 50, bottom: 100, left: 100},
+	    width = 150,
+	    height = 150,
 	    data = options.data,
 	    container = options.container,
-	    legend = options.legend,
-	    labelsData = options.labels,
+	    //labelsData = options.labels,
 	    startColor = options.start_color,
 	    endColor = options.end_color;
 
@@ -73,12 +76,13 @@ function createConfusionMatrix(options) {
 	    .attr("y", y.rangeBand() / 2)
 	    .attr("text-anchor", "middle")
 	    .style("fill", function(d, i) { return d >= maxValue/2 ? 'white' : 'black'; })
-	    .text(function(d, i) { return d; });
+	    //.text(function(d, i) { return d; }); //to show number
+	    .text(function(d, i) { return ; });
 
 	row.selectAll(".cell")
 	    .data(function(d, i) { return data[i]; })
 	    .style("fill", colorMap);
-
+/*
 	var labels = svg.append('g')
 		.attr('class', "labels");
 
@@ -97,9 +101,9 @@ function createConfusionMatrix(options) {
 	    .attr("y2", 5);
 
 	columnLabels.append("text")
-	    .attr("x", 30)
+	    .attr("x", 0)
 	    .attr("y", y.rangeBand() / 2)
-	    .attr("dy", ".22em")
+	    .attr("dy", ".82em")
 	    .attr("text-anchor", "end")
 	    .attr("transform", "rotate(-60)")
 	    .text(function(d, i) { return d; });
@@ -124,8 +128,8 @@ function createConfusionMatrix(options) {
 	    .attr("dy", ".32em")
 	    .attr("text-anchor", "end")
 	    .text(function(d, i) { return d; });
-
-    var key = d3.select(legend)
+*/
+    var key = d3.select("#legend")
     .append("svg")
     .attr("width", widthLegend)
     .attr("height", height + margin.top + margin.bottom);
@@ -170,41 +174,4 @@ function createConfusionMatrix(options) {
     .attr("class", "y axis")
     .attr("transform", "translate(41," + margin.top + ")")
     .call(yAxis)
-
-}
-
-// The table generation function
-function tabulate(data, columns) {
-    var table = d3.select("#dataView").append("table")
-            .attr("style", "margin-left: " + margin.left +"px"),
-        thead = table.append("thead"),
-        tbody = table.append("tbody");
-
-    // append the header row
-    thead.append("tr")
-        .selectAll("th")
-        .data(columns)
-        .enter()
-        .append("th")
-            .text(function(column) { return column; });
-
-    // create a row for each object in the data
-    var rows = tbody.selectAll("tr")
-        .data(data)
-        .enter()
-        .append("tr");
-
-    // create a cell in each row for each column
-    var cells = rows.selectAll("td")
-        .data(function(row) {
-            return columns.map(function(column) {
-                return {column: column, value: row[column]};
-            });
-        })
-        .enter()
-        .append("td")
-        .attr("style", "font-family: Courier") // sets the font style
-            .html(function(d) { return d.value; });
-
-    return table;
 }

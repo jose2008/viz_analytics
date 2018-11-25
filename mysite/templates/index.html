@@ -23,29 +23,28 @@
     <!-- Page Content -->
     <div class="container">
 
-
-
       <h1 class="my-4">Page Heading
         <small>Secondary Text</small>
       </h1>
-
       <!-- Portfolio Item Row -->
       <div class="row">
+          <div class="col-md-3 col-sm-6 mb-4">
+            Voting Ensamble
+            <div id="dataView1" class="matrixContainer"></div>
+            <div style="display:inline-block; float:left" id="container1"></div>
+            <div style="display:inline-block; float:left" id="legend1"></div>
+          </div>
 
-        Voting Ensamble
-          <div id="dataView1" class="matrixContainer"></div>
-          <div style="display:inline-block; float:left" id="container1"></div>
-          <div style="display:inline-block; float:left" id="legend1"></div>
-
-        
+          <div class="col-md-3 col-sm-6 mb-4">
+          CSPA
+          <div id="dataView3" class="matrixContainer"></div>
+          <div style="display:inline-block; float:left" id="container8"></div>
+          <div style="display:inline-block; float:left" id="legend8"></div>
+        </div>
 
       </div>
 
-
-
       <div class="row">
-
-  
 
         <div class="col-md-3 col-sm-6 mb-4">
           SOM
@@ -70,6 +69,40 @@
       </div>
       <!-- /.row -->
 
+      <div class="row">
+        
+
+        <div class="col-md-3 col-sm-6 mb-4">
+          kmean
+          <div id="dataView5" class="matrixContainer"></div>
+          <div style="display:inline-block; float:left" id="container5"></div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+          Birch
+          <div id="dataView6" class="matrixContainer"></div>
+          <div style="display:inline-block; float:left" id="container6"></div>
+        </div>
+
+
+        <div class="col-md-3 col-sm-6 mb-4">
+          som
+          <div id="dataView7" class="matrixContainer"></div>
+          <div style="display:inline-block; float:left" id="container7"></div>
+        </div>
+        <!--
+        <div class="col-md-3 col-sm-6 mb-4">
+          kmean
+          <div id="dataView5" class="matrixContainer"></div>
+          <div style="display:inline-block; float:left" id="container5"></div>
+        </div>
+        -->
+
+
+      </div>
+
+
+
   </div>
 
 
@@ -93,6 +126,28 @@
       var model_voting = {{model_list}}[3];
   </script>
   
+  <script type="text/javascript">
+      var matrix_kmean = {{model_list}}[4];
+  </script>
+
+  <script type="text/javascript">
+      var matrix_birch = {{model_list}}[5];
+  </script>
+
+  <script type="text/javascript">
+      var matrix_som = {{model_list}}[6];
+  </script>
+
+  <script type="text/javascript">
+      var matrix_s = {{model_list}}[7];
+  </script>
+
+  <script type="text/javascript">
+      var model_cspa = {{model_list}}[8];
+  </script>
+
+  {% load static %}
+  <script src="{% static 'js/main.js' %}"></script>
 
   {% load static %}
   <script src="{% static 'js/script.js' %}"></script>
@@ -102,6 +157,8 @@
   {% load static %}
   <script src="{% static 'js/test2.js' %}"></script>
 
+
+  
 
   
 
