@@ -4,7 +4,6 @@ import numpy as np
 from polls.pca import create_file_json
 import polls.somLib as somLib
 from sklearn.datasets import load_iris
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection  import cross_val_score
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
@@ -20,10 +19,6 @@ import metis
 #iris = load_breast_cancer()
 iris = datasets.load_iris()
 X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.3) # 70% training and 30% test
-knn = KNeighborsClassifier()
-knn.fit(X_train, y_train)
-y_pred = knn.predict(X_test)
-cm = confusion_matrix(y_test, y_pred)
 
 sklearn_pca = sklearnPCA(n_components=2)
 std = StandardScaler().fit_transform(iris.data)
@@ -50,7 +45,6 @@ def index(request):
     index = np.matrix(np.arange(150)).transpose()
 
     matrix_general = np.concatenate((matrix_feature_kmean, matrix_label_knn), axis=1)
-    matrix_test = np.concatenate((index, matrix_general),axis=1)
     tolist_knn = matrix_general.tolist()
     v1 = kmean.predict(iris.data)
     acurracy_list.append(metrics.adjusted_rand_score(iris.target, kmean.predict(iris.data)) )
@@ -115,7 +109,6 @@ def index(request):
 
     ################################################## SOM clustering ######################################################
     df_train = pd.DataFrame( iris.data, columns=iris.feature_names)
-    print(df_train.shape)
     df_test  = pd.DataFrame( X_test   , columns=iris.feature_names)
     df_original = df_train
     agri_som = somLib.SOM(1,3,4)
@@ -191,9 +184,6 @@ def index(request):
         v3[i] = tolist_som_test[i][2]
 
 
-    print(matrix_general_som.shape)
-
-
     ############################################## ensamble voting #############################################################
     voting = list()
     for i in range(len(iris.data)):
@@ -207,7 +197,7 @@ def index(request):
     tolist_voting = matrix_general_voting.tolist()
 
 
-    ############################################ make matriz k-means ##########################################################
+    ############################################ make matriz k-means && birch && som ##########################################################
     s1_knn = set()
     s2_knn = set()
     s3_knn = set()
@@ -230,9 +220,6 @@ def index(request):
     list_set.append(s2_som)
 
 
-
-
-
     n = len(kmean.labels_)
     for i in range(n):
         if kmean.labels_[i] == 0:
@@ -253,8 +240,6 @@ def index(request):
             s2_som.add(i)
         if clustered_df['bmu_idx'][i] == 2:
             s3_som.add(i)
-
-
     
     matrix = np.zeros((n, n))
     matrix_birch = np.zeros((n, n))
@@ -283,7 +268,6 @@ def index(request):
 
     ############################################### matrix ghpa ############################################################
 
-
     for i in range(n):
         for j in range(len(list_set)):
             if i in list_set[j]:
@@ -291,11 +275,8 @@ def index(request):
             else:
                 h[i][j] = 0
     h_t = h.transpose()
-    #np.multiply(m, m)
     s = (0.3)*h.dot(h_t)
     list_matrix_s = s.tolist()
-
-
 
     ############################################ algorithm ghpa  ###########################################################
     list_ad = []
@@ -309,24 +290,65 @@ def index(request):
                 list_tmp.append(t)
         list_ad.append(list_tmp)
 
-    print(list_ad)
-    #list_tupla = [ [(1,1),(2,4)], [(0,1),(3,4)], [ (0,4),(3,1) ], [(2,1), (1,4)] ]
     cuts, parts = metis.part_graph(list_ad, 3, recursive = False, dbglvl=metis.METIS_DBG_ALL)
-    #print(parts)   
-
-
 
     matrix__feature_cspa = np.matrix(feature)
 
-
-
-    #matrix__feature_birch = np.matrix(birch_feature)
     matrix_label_cspa = np.matrix(parts).transpose()
-    print(matrix_label_cspa)
     matrix_general_cspa = np.concatenate((matrix__feature_cspa, matrix_label_cspa), axis=1)
-    print("********************")
-    print(matrix_general_cspa.shape)
     tolist_cspa = matrix_general_cspa.tolist()
+
+    v4 = parts
+    tolist_cspa_test = tolist_cspa
+    frequency_cspa = {}
+    for i in range(len(iris.target)):
+        if v4[i] == 0:
+            count = frequency_cspa.get(v1[i], 0)
+            frequency_cspa[v1[i]] = count +1
+    val_0 = max(frequency_cspa, key=frequency_cspa.get)
+
+    frequency2_cspa = {}
+    for i in range(len(iris.target)):
+        if v4[i] == 1:
+            count = frequency2_cspa.get(v1[i], 0)
+            frequency2_cspa[v1[i]] = count +1
+    val_1 = max(frequency2_cspa, key=frequency2_cspa.get)
+
+    frequency3_cspa = {}
+    for i in range(len(iris.target)):
+        if v4[i] == 2:
+            count = frequency3_cspa.get(v1[i], 0)
+            frequency3_cspa[v1[i]] = count +1
+    val_2 = max(frequency3_cspa, key=frequency3_cspa.get)
+
+    list_dict_cspa = list(frequency_cspa.keys())
+    if(list_dict_cspa[0]!=val_1 and list_dict_cspa[0]!=val_2):
+        val_0 = list_dict_cspa[0]
+    else:
+        val_0 = list_dict_cspa[1]
+
+
+    for i in range(len(iris.target)):
+        if v4[i] == 1:
+            tolist_cspa_test[i][2] = val_1
+
+    for i in range(len(iris.target)):
+        if v4[i] == 2:
+            tolist_cspa_test[i][2] = val_2
+
+    for i in range(len(iris.target)):
+        if v4[i] == 0:
+            tolist_cspa_test[i][2] = val_0
+
+    for i in range(len(iris.target)):
+        v4[i] = tolist_cspa[i][2]
+
+
+
+
+
+
+
 
 
     ############################################### seding model to view ###################################################
@@ -339,5 +361,5 @@ def index(request):
     list_model.append(list_matriz_birch)
     list_model.append(list_matriz_som)
     list_model.append(list_matrix_s)
-    list_model.append(tolist_cspa)
+    list_model.append(tolist_cspa_test)
     return render(request,'index.html', {"model_list":list_model})

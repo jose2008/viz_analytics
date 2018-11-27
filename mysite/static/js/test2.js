@@ -65,7 +65,7 @@ var correlationMatrix = [
 
     var  matrix_correlation = {
         container : '#container5',
-        data      : matrix_s,
+        data      : matrix_som,
         //labels    : labels,
         start_color : '#ffffff',
         end_color : '#3498db'
@@ -78,26 +78,38 @@ var correlationMatrix = [
 
     var  matrix_correlation2 = {
         container : '#container6',
-        data      : matrix_birch,
+        data      : matrix_kmean,
         //labels    : labels,
         start_color : '#ffffff',
         end_color : '#3498db'
     };
-    Matrix(matrix_correlation2);
+    //Matrix(matrix_correlation2);
 
     console.log( 'mat2 end' );
 
     console.log( 'mat3 start' );
     var  matrix_correlation3 = {
         container : '#container7',
-        data      : matrix_som,
+        data      : matrix_birch,
         //labels    : labels,
         start_color : '#ffffff',
         end_color : '#3498db'
     };
-    Matrix(matrix_correlation3);
+    //Matrix(matrix_correlation3);
 
     console.log( 'mat3 end' );
+
+
+    var  matrix_correlation = {
+        container : '#container9',
+        data      : matrix_s,
+        //labels    : labels,
+        start_color : '#ffffff',
+        end_color : '#3498db'
+    };
+    Matrix(matrix_correlation);
+
+
 
 
 //createConfusionMatrix2( matrixParams1 );
