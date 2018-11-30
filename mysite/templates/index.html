@@ -43,9 +43,10 @@
         </div>
 
         <div class="col-md-3 col-sm-6 mb-4">
-          CSPA
-          <div id="dataView5" class="matrixContainer9"></div>
-          <div style="display:inline-block; float:left" id="container9"></div>
+          HGPA
+          <div id="dataView3" class="matrixContainer"></div>
+          <div style="display:inline-block; float:left" id="container10"></div>
+          <div style="display:inline-block; float:left" id="legend10"></div>
         </div>
 
 
@@ -109,8 +110,61 @@
       </div>
 
 
+       <div class="row">
+        
+
+        <div class="col-md-3 col-sm-6 mb-4">
+          matrix1
+          <div id="dataView8" class="matrixContainer"></div>
+          <div style="display:inline-block; float:left" id="containerMatrix1"></div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+          matrix2
+          <div id="dataView6" class="matrixContainer"></div>
+          <div style="display:inline-block; float:left" id="containerMatrix2"></div>
+        </div>
+
+
+        <div class="col-md-3 col-sm-6 mb-4">
+          matrix3
+          <div id="dataView7" class="matrixContainer"></div>
+          <div style="display:inline-block; float:left" id="containerMatrix3"></div>
+        </div>
+        <!--
+        <div class="col-md-3 col-sm-6 mb-4">
+          kmean
+          <div id="dataView5" class="matrixContainer"></div>
+          <div style="display:inline-block; float:left" id="container5"></div>
+        </div>
+        -->
+
+
+      </div>
+
+
+
+
+      <div class="row">
+        
+
+        <div class="col-md-3 col-sm-6 mb-4">
+          matrix4
+          <div id="dataView8" class="matrixContainer"></div>
+          <div style="display:inline-block; float:left" id="containerMatrix4"></div>
+        </div>
+
+      </div>
+
+
+
+
+
+
+
 
   </div>
+
 
 
 
@@ -135,6 +189,7 @@
   
   <script type="text/javascript">
       var matrix_kmean = {{model_list}}[4];
+      document.write(matrix_kmean)
   </script>
 
   <script type="text/javascript">
@@ -153,6 +208,10 @@
       var model_cspa = {{model_list}}[8];
   </script>
 
+  <script type="text/javascript">
+      var model_hgpa = {{model_list}}[9];
+  </script>
+
   {% load static %}
   <script src="{% static 'js/main.js' %}"></script>
 
@@ -164,10 +223,35 @@
   {% load static %}
   <script src="{% static 'js/test2.js' %}"></script>
 
-
+  {% load static %}
+  <script src="{% static 'js/paintMatrix.js' %}"></script>
   
-
   
+  <script type="text/javascript">
+    matrix10({
+      container : '#containerMatrix1',
+      data : {{model_list}}[6]
+    });
+
+    matrix10({
+      container : '#containerMatrix2',
+      data : {{model_list}}[4]
+    });
+
+    matrix10({
+      container : '#containerMatrix3',
+      data : {{model_list}}[5]
+    });
+
+    matrix10({
+      container : '#containerMatrix4',
+      data : {{model_list}}[10]
+    });
+
+
+
+  </script>
+    
 
 
 

@@ -15,10 +15,13 @@ from sklearn.decomposition import PCA as sklearnPCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import Birch
 import metis
+import subprocess
 
 #iris = load_breast_cancer()
 iris = datasets.load_iris()
-X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.3) # 70% training and 30% test
+X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.3, shuffle = True, random_state = 2) # 70% training and 30% test
+
+
 
 sklearn_pca = sklearnPCA(n_components=2)
 std = StandardScaler().fit_transform(iris.data)
@@ -32,12 +35,14 @@ def most_common(lst, acurracy):
 
 
 def index(request):
-    X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.3) # 70% tra$
+    X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.3, shuffle = True, random_state = 2) # 70% tra$
     acurracy_list = []
     
 
     ############################################### k-Means clustering ##################################################
     kmean = KMeans(n_clusters=3)
+    print( 'type: ', type( iris.data ) )
+    #np.random.shuffle( iris.data )
     kmean.fit(iris.data)
 
     matrix_feature_kmean = np.matrix(feature)
@@ -48,6 +53,9 @@ def index(request):
     tolist_knn = matrix_general.tolist()
     v1 = kmean.predict(iris.data)
     acurracy_list.append(metrics.adjusted_rand_score(iris.target, kmean.predict(iris.data)) )
+
+    print("kmean:  ")
+    print(metrics.adjusted_rand_score(iris.target, kmean.predict(iris.data)))
 
 
     ################################################# birch clustering #####################################################
@@ -61,6 +69,8 @@ def index(request):
     tolist_birch = matrix_general_birch.tolist()
     v2 = birch.predict(iris.data)
     acurracy_list.append(metrics.adjusted_rand_score(iris.target, birch.predict(iris.data)) )
+    print("birch:")
+    print(metrics.adjusted_rand_score(iris.target, birch.predict(iris.data)))
 
     tolist_birch_test = tolist_birch
     frequency = {}
@@ -131,6 +141,8 @@ def index(request):
     matrix_general_som = np.concatenate((matrix__feature_som, matrix_label_som), axis=1)
     tolist_som = matrix_general_som.tolist()
     acurracy_list.append(metrics.adjusted_rand_score(iris.target, clustered_df['bmu_idx']) )
+    print("som")
+    print(metrics.adjusted_rand_score(iris.target, clustered_df['bmu_idx']))
     v3 = clustered_df['bmu_idx']
 
 
@@ -195,6 +207,8 @@ def index(request):
     matrix_label_voting = np.matrix(l ).transpose()
     matrix_general_voting = np.concatenate((matrix__feature_voting, matrix_label_voting), axis=1)
     tolist_voting = matrix_general_voting.tolist()
+    print("voting")
+    print(metrics.adjusted_rand_score(iris.target, l  ))
 
 
     ############################################ make matriz k-means && birch && som ##########################################################
@@ -220,6 +234,8 @@ def index(request):
     list_set.append(s2_som)
 
 
+    print("list birch .......................")
+    print(tolist_birch_test)
     n = len(kmean.labels_)
     for i in range(n):
         if kmean.labels_[i] == 0:
@@ -228,37 +244,81 @@ def index(request):
             s2_knn.add(i)
         if kmean.labels_[i] == 2:
             s3_knn.add(i)
-        if birch.labels_[i] == 0:
+        if tolist_birch_test[i][2] == 0:
             s1_birch.add(i)
-        if birch.labels_[i] == 1:
+        if tolist_birch_test[i][2] == 1:
             s2_birch.add(i)
-        if birch.labels_[i] == 2:
+        if tolist_birch_test[i][2] == 2:
             s3_birch.add(i)
-        if clustered_df['bmu_idx'][i] == 0:
+        if tolist_som_test[i][2] == 0:
             s1_som.add(i)
-        if clustered_df['bmu_idx'][i] == 1:
+        if tolist_som_test[i][2] == 1:
             s2_som.add(i)
-        if clustered_df['bmu_idx'][i] == 2:
+        if tolist_som_test[i][2] == 2:
             s3_som.add(i)
     
     matrix = np.zeros((n, n))
     matrix_birch = np.zeros((n, n))
     matrix_som = np.zeros((n, n))
 
-    for i in range(n):
-        for j in range(n):
-            if (i in s1_knn and j in s1_knn) or (i in s2_knn and j in s2_knn) or (i in s3_knn and j in s3_knn):
-                matrix[i][j] = 1
-            else:
-                matrix[i][j] = 0
-            if (i in s1_birch and j in s1_birch) or (i in s2_birch and j in s2_birch) or (i in s3_birch and j in s3_birch):
-                matrix_birch[i][j] = 1
-            else:
-                matrix_birch[i][j] = 0
-            if (i in s1_som and j in s1_som) or (i in s2_som and j in s2_som) or (i in s3_som and j in s3_som):
-                matrix_som[i][j] = 1
-            else:
-                matrix_som[i][j] = 0
+    for i in range(len(s1_knn)):
+        for j in range(len(s1_knn)):
+            matrix[i][j] = 1
+
+    for i in range(len(s2_knn)):
+        for j in range(len(s2_knn)):
+            matrix[i + len(s1_knn)][j +len(s1_knn)] = 1
+    
+    for i in range(len(s3_knn)):
+        for j in range(len(s3_knn)):
+            matrix[i +len(s1_knn) + len(s2_knn)][j+len(s1_knn) + len(s2_knn)] = 1
+
+
+
+    for i in range(len(s1_birch)):
+        for j in range(len(s1_birch)):
+            matrix_birch[i][j] = 1
+
+    for i in range(len(s2_birch)):
+        for j in range(len(s2_birch)):
+            matrix_birch[i + len(s1_birch)][j +len(s1_birch)] = 1
+    
+    for i in range(len(s3_birch)):
+        for j in range(len(s3_birch)):
+            matrix_birch[i +len(s1_birch) + len(s2_birch)][j+len(s1_birch) + len(s2_birch)] = 1
+
+
+
+    for i in range(len(s1_som)):
+        for j in range(len(s1_som)):
+            matrix_som[i][j] = 1
+
+    for i in range(len(s2_som)):
+        for j in range(len(s2_som)):
+            matrix_som[i + len(s1_som)][j +len(s1_som)] = 1
+    
+    for i in range(len(s3_som)):
+        for j in range(len(s3_som)):
+            matrix_som[i +len(s1_som) + len(s2_som)][j+len(s1_som) + len(s2_som)] = 1
+
+
+
+
+
+    #for i in range(n):
+    #    for j in range(n):
+            #if (i in s1_knn and j in s1_knn) or (i in s2_knn and j in s2_knn) or (i in s3_knn and j in s3_knn):
+            #    matrix[i][j] = 1
+            #else:
+            #    matrix[i][j] = 0
+    #        if (i in s1_birch and j in s1_birch) or (i in s2_birch and j in s2_birch) or (i in s3_birch and j in s3_birch):
+    #            matrix_birch[i][j] = 1
+    #        else:
+    #            matrix_birch[i][j] = 0
+    #        if (i in s1_som and j in s1_som) or (i in s2_som and j in s2_som) or (i in s3_som and j in s3_som):
+    #            matrix_som[i][j] = 1
+    #        else:
+    #            matrix_som[i][j] = 0
 
     h = np.zeros((n, len(list_set)))
     list_matriz_kmean = matrix.tolist()
@@ -297,6 +357,8 @@ def index(request):
     matrix_label_cspa = np.matrix(parts).transpose()
     matrix_general_cspa = np.concatenate((matrix__feature_cspa, matrix_label_cspa), axis=1)
     tolist_cspa = matrix_general_cspa.tolist()
+    print("ghpa")
+    print(metrics.adjusted_rand_score(iris.target, np.array(parts)))
 
     v4 = parts
     tolist_cspa_test = tolist_cspa
@@ -344,12 +406,64 @@ def index(request):
         v4[i] = tolist_cspa[i][2]
 
 
+    s1_cspa = set()
+    s2_cspa = set()
+    s3_cspa = set()
+
+    print("cspa list......................................")
+    print(tolist_cspa_test)
+    for i in range(n):
+        if tolist_cspa_test[i][2] == 0:
+            s1_cspa.add(i)
+        if tolist_cspa_test[i][2] == 1:
+            s2_cspa.add(i)
+        if tolist_cspa_test[i][2] == 2:
+            s3_cspa.add(i)
 
 
+    matrix_cspa = np.zeros((n, n))
+    for i in range(len(s1_cspa)):
+        for j in range(len(s1_cspa)):
+            matrix_cspa[i][j] = 1
+
+    for i in range(len(s2_cspa)):
+        for j in range(len(s2_cspa)):
+            matrix_cspa[i + len(s1_cspa)][j +len(s1_cspa)] = 1
+    
+    for i in range(len(s3_cspa)):
+        for j in range(len(s3_cspa)):
+            matrix_cspa[i +len(s1_cspa) + len(s2_cspa)][j+len(s1_cspa) + len(s2_cspa)] = 1
 
 
+    list_matriz_cspa = matrix_cspa.tolist()
 
 
+    ############################################### HGPA #################################################################
+    file = open("test.txt","w")
+    file.write(str(9)+ " "+ str(len(iris.data)))
+    file.write('\n')
+    #print(list_set[0][0])
+    for i in range(9):
+        for e in list_set[i]:
+            file.write( str(e+1).rstrip('\n')+" " ) 
+        file.write('\n')
+    file.close()
+    print("************************************+hmetis+**************************************")
+    subprocess.call(["./hmetis","test.txt", "3", "2", "10", "5", "3", "0", "0" ,"0"])
+    file = open("test.txt.part.3", "r") 
+    list_hgpa = []
+    for line in file:
+        list_hgpa.append(int(line))
+
+
+    matrix__feature_hgpa = np.matrix(feature)
+    matrix_label_hgpa = np.matrix(list_hgpa).transpose()
+
+    matrix_general_hgpa = np.concatenate((matrix__feature_hgpa, matrix_label_hgpa), axis=1)
+    tolist_hgpa = matrix_general_hgpa.tolist()
+    print("HGPA")
+    print(metrics.adjusted_rand_score(iris.target, np.array(list_hgpa)))
+    #print(tolist_hgpa)
 
     ############################################### seding model to view ###################################################
     list_model = []
@@ -362,4 +476,6 @@ def index(request):
     list_model.append(list_matriz_som)
     list_model.append(list_matrix_s)
     list_model.append(tolist_cspa_test)
+    list_model.append(tolist_hgpa)
+    list_model.append(list_matriz_cspa)
     return render(request,'index.html', {"model_list":list_model})

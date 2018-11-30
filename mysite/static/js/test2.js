@@ -29,7 +29,11 @@ var matrixParams5 = { 	container : '#container8',
                        	model     : model_cspa,
                        	count     : 3000
                     };
-
+var matrixParams6 = { 	container : '#container10',
+                       	legend    : '#legend10',
+                       	model     : model_hgpa,
+                       	count     : 3000
+                    };
 
 var confusionMatrix = model_kmean;
 var confusionMatrix2 = model_birch;
@@ -43,6 +47,7 @@ createGraficaModel(matrixParams2);
 createGraficaModel(matrixParams3);
 createGraficaModel(matrixParams4);
 createGraficaModel(matrixParams5);
+createGraficaModel(matrixParams6);
 
 
 var correlationMatrix = [
@@ -70,7 +75,7 @@ var correlationMatrix = [
         start_color : '#ffffff',
         end_color : '#3498db'
     };
-    Matrix(matrix_correlation);
+    //Matrix(matrix_correlation);
 
     console.log( 'mat1 end' );
 
@@ -107,7 +112,7 @@ var correlationMatrix = [
         start_color : '#ffffff',
         end_color : '#3498db'
     };
-    Matrix(matrix_correlation);
+    //Matrix(matrix_correlation);
 
 
 
